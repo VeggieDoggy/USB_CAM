@@ -19,7 +19,9 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
 
     struct usb_host_config *hostconfig;
     struct usb_config_descriptor *config;
-    
+
+    struct usb_interface_assoc_descriptor *assoc_desc;
+
     printk("%s : cnt = %d", __FUNCTION__, cnt++);
 
     printk("Device Descriptor:\n"
@@ -68,6 +70,25 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
                config->bNumInterfaces, config->bConfigurationValue,
                config->iConfiguration,
                config->bmAttributes);
+        
+        assoc_desc = hostconfig->intf_assoc[0];
+        printk("    Interface Association:\n"
+               "      bLength             %5u\n"
+               "      bDescriptorType     %5u\n"
+               "      bFirstInterface     %5u\n"
+               "      bInterfaceCount     %5u\n"
+               "      bFunctionClass      %5u\n"
+               "      bFunctionSubClass   %5u\n"
+               "      bFunctionProtocol   %5u\n"
+               "      iFunction           %5u\n",
+            assoc_desc->bLength,
+            assoc_desc->bDescriptorType,
+            assoc_desc->bFirstInterface,
+            assoc_desc->bInterfaceCount,
+            assoc_desc->bFunctionClass,
+            assoc_desc->bFunctionSubClass,
+            assoc_desc->bFunctionProtocol,
+            assoc_desc->iFunction);
         
     }
 
