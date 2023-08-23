@@ -12,8 +12,14 @@
 
 static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *id) {
     static int cnt;
+    static int i;
+
     struct usb_device *dev = interface_to_usbdev(intf);
     struct usb_device_descriptor *descriptor = &dev->descriptor;
+
+    struct usb_host_config *hostconfig;
+    struct usb_config_descriptor *config;
+    
     printk("%s : cnt = %d", __FUNCTION__, cnt++);
 
     printk("Device Descriptor:\n"
@@ -43,6 +49,27 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
 	       descriptor->iProduct, 
 	       descriptor->iSerialNumber, 
 	       descriptor->bNumConfigurations);
+    
+    for (i = 0; i < descriptor->bNumConfigurations; i++)
+    {
+        hostconfig = &dev->config[i];
+        config     = &hostconfig->desc;
+        printk("  Configuration Descriptor %d:\n"
+               "    bLength             %5u\n"
+               "    bDescriptorType     %5u\n"
+               "    wTotalLength        %5u\n"
+               "    bNumInterfaces      %5u\n"
+               "    bConfigurationValue %5u\n"
+               "    iConfiguration      %5u\n"
+               "    bmAttributes         0x%02x\n",
+               i, 
+               config->bLength, config->bDescriptorType,
+               le16_to_cpu(config->wTotalLength),
+               config->bNumInterfaces, config->bConfigurationValue,
+               config->iConfiguration,
+               config->bmAttributes);
+        
+    }
 
     return 0;
 }
