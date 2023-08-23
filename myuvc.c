@@ -13,6 +13,7 @@
 static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *id) {
     static int cnt;
     static int i;
+    static int j;
 
     struct usb_device *dev = interface_to_usbdev(intf);
     struct usb_device_descriptor *descriptor = &dev->descriptor;
@@ -21,6 +22,8 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
     struct usb_config_descriptor *config;
 
     struct usb_interface_assoc_descriptor *assoc_desc;
+
+    struct usb_interface_descriptor	*interface;
 
     printk("%s : cnt = %d", __FUNCTION__, cnt++);
 
@@ -89,6 +92,26 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
             assoc_desc->bFunctionSubClass,
             assoc_desc->bFunctionProtocol,
             assoc_desc->iFunction);
+
+        for (j = 0; j < intf->num_altsetting; j++)
+            {
+                interface = &intf->altsetting[j].desc;
+                printk("    Interface Descriptor altsetting %d:\n"
+                       "      bLength             %5u\n"
+                       "      bDescriptorType     %5u\n"
+                       "      bInterfaceNumber    %5u\n"
+                       "      bAlternateSetting   %5u\n"
+                       "      bNumEndpoints       %5u\n"
+                       "      bInterfaceClass     %5u\n"
+                       "      bInterfaceSubClass  %5u\n"
+                       "      bInterfaceProtocol  %5u\n"
+                       "      iInterface          %5u\n",
+                       j, 
+                       interface->bLength, interface->bDescriptorType, interface->bInterfaceNumber,
+                       interface->bAlternateSetting, interface->bNumEndpoints, interface->bInterfaceClass,
+                       interface->bInterfaceSubClass, interface->bInterfaceProtocol,
+                       interface->iInterface);
+            }
         
     }
 
