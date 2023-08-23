@@ -12,8 +12,7 @@
 
 static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *id) {
     static int cnt;
-    static int i;
-    static int j;
+    static int i, j, k, l;
 
     struct usb_device *dev = interface_to_usbdev(intf);
     struct usb_device_descriptor *descriptor = &dev->descriptor;
@@ -24,6 +23,11 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
     struct usb_interface_assoc_descriptor *assoc_desc;
 
     struct usb_interface_descriptor	*interface;
+
+	unsigned char *buffer;
+	int buflen;
+    int desc_len;
+    int desc_cnt;
 
     printk("%s : cnt = %d", __FUNCTION__, cnt++);
 
@@ -112,6 +116,23 @@ static int myuvc_probe(struct usb_interface *intf, const struct usb_device_id *i
                        interface->bInterfaceSubClass, interface->bInterfaceProtocol,
                        interface->iInterface);
             }
+        
+        buffer = intf->cur_altsetting->extra;
+        buflen = intf->cur_altsetting->extralen;
+        printk("extra buffer of interface %d:\n", cnt-1);
+        k = 0;
+        desc_cnt = 0;
+        while (k < buflen)
+        {
+            desc_len = buffer[k];
+            printk("extra desc %d: ", desc_cnt);
+            for (l = 0; l < desc_len; l++, k++)
+            {
+                printk("%02x ", buffer[k]);
+            }
+            desc_cnt++;
+            printk("\n");
+        }
         
     }
 
