@@ -1,0 +1,2 @@
+/home/book/nfs_rootfs/drivers_projects/USB_Camera/myuvc.o
+
